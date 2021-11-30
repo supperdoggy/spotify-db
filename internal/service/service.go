@@ -14,7 +14,7 @@ type IService interface {
 }
 
 type Service struct {
-	d db.IDB
+	d      db.IDB
 	logger *zap.Logger
 }
 

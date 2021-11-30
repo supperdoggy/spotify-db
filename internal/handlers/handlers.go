@@ -9,13 +9,13 @@ import (
 )
 
 type Handlers struct {
-	s service.IService
+	s      service.IService
 	logger *zap.Logger
 }
 
 func NewHandlers(s service.IService, l *zap.Logger) Handlers {
 	return Handlers{
-		s:s,
+		s:      s,
 		logger: l,
 	}
 }
@@ -69,4 +69,3 @@ func (h *Handlers) GetSegment(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
-
