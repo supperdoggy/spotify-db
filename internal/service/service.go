@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/supperdoggy/spotify-web-project/spotify-db/internal/db"
 	"github.com/supperdoggy/spotify-web-project/spotify-db/shared/structs"
+	globalStructs "github.com/supperdoggy/spotify-web-project/spotify-globalStructs"
 	"go.uber.org/zap"
 )
 
@@ -11,6 +12,8 @@ type IService interface {
 	NewSegments(req structs.AddSegmentsReq) (resp structs.AddSegmentsResp, err error)
 	GetAllSongs() (resp structs.GetAllSongsResp, err error)
 	GetSegment(req structs.GetSegmentReq) (resp structs.GetSegmentResp, err error)
+	GetUser(req structs.GetUserReq) (resp structs.GetUserResp, err error)
+	NewUser(req globalStructs.User) (resp structs.NewUserResp, err error)
 }
 
 type Service struct {
@@ -73,4 +76,38 @@ func (s *Service) GetSegment(req structs.GetSegmentReq) (resp structs.GetSegment
 
 	resp.Segment = segment
 	return resp, err
+}
+
+func (s *Service) NewUser(req globalStructs.User) (resp structs.NewUserResp, err error) {
+	if req.ID == "" {
+		resp.Error = "id cannot be empty"
+		return resp, errors.New(resp.Error)
+	}
+
+	err = s.d.NewUser(req)
+	if err != nil {
+		s.logger.Error("error creating new user", zap.Error(err), zap.Any("req", req))
+		resp.Error = err.Error()
+		return resp, err
+	}
+
+	resp.OK = true
+	return resp, nil
+}
+
+func (s *Service) GetUser(req structs.GetUserReq) (resp structs.GetUserResp, err error) {
+	if req.ID == "" {
+		resp.Error = "id cannot be empty"
+		return resp, errors.New(resp.Error)
+	}
+
+	u, err := s.d.GetUserByID(req.ID)
+	if err != nil {
+		s.logger.Error("error getting user by id", zap.Error(err), zap.Any("id", req.ID))
+		resp.Error = err.Error()
+		return resp, err
+	}
+
+	resp.User = u
+	return resp, nil
 }

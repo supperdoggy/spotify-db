@@ -26,3 +26,17 @@ type GetSegmentResp struct {
 	Segment globalStructs.SongData `json:"segment"`
 	Error   string                 `json:"error"`
 }
+
+type NewUserResp struct {
+	OK bool `json:"ok"`
+	Error string `json:"error"`
+}
+
+type GetUserReq struct {
+	ID string `json:"id"`
+}
+
+type GetUserResp struct {
+	User globalStructs.User `json:"user"`
+	Error string `json:"error"`
+}

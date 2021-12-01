@@ -12,6 +12,8 @@ type IDB interface {
 	GetSegment(id string) (result globalStructs.SongData, err error)
 	InsertSegment(ts ...globalStructs.SongData) error
 	InsertSong(s globalStructs.Song) error
+	GetUserByID(id string) (resp globalStructs.User, err error)
+	NewUser(u globalStructs.User) error
 }
 
 type DB struct {
@@ -61,4 +63,14 @@ func (d *DB) InsertSegment(ts ...globalStructs.SongData) error {
 func (d *DB) InsertSong(s globalStructs.Song) error {
 	err := d.SongsCollection.Insert(s)
 	return err
+}
+
+func (d *DB) NewUser(u globalStructs.User) error {
+	err := d.UsersCollection.Insert(u)
+	return err
+}
+
+func (d *DB) GetUserByID(id string) (resp globalStructs.User, err error) {
+	err = d.UsersCollection.Find(obj{"_id": id}).One(&resp)
+	return
 }

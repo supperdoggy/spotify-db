@@ -23,7 +23,10 @@ func main() {
 		apiv1.POST("/addSegment", handlers.AddSegments)
 		apiv1.GET("/allsongs", handlers.GetAllSongs)
 		apiv1.POST("/getsegment", handlers.GetSegment)
+		apiv1.POST("/new_user", handlers.NewUser)
+		apiv1.POST("/get_user", handlers.GetUser)
 	}
+
 	if err := r.Run(":8082"); err != nil {
 		logger.Fatal("error running db service")
 	}

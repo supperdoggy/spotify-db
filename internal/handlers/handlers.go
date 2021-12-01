@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/supperdoggy/spotify-web-project/spotify-db/internal/service"
 	"github.com/supperdoggy/spotify-web-project/spotify-db/shared/structs"
+	globalStructs "github.com/supperdoggy/spotify-web-project/spotify-globalStructs"
 	"go.uber.org/zap"
 	"net/http"
 )
@@ -61,6 +62,46 @@ func (h *Handlers) GetSegment(c *gin.Context) {
 	}
 
 	resp, err := h.s.GetSegment(req)
+	if err != nil {
+		h.logger.Error("error getting segment", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *Handlers) NewUser(c *gin.Context) {
+	var req globalStructs.User
+	var resp structs.NewUserResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.NewUser(req)
+	if err != nil {
+		h.logger.Error("error getting segment", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *Handlers) GetUser(c *gin.Context) {
+	var req structs.GetUserReq
+	var resp structs.GetUserResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.GetUser(req)
 	if err != nil {
 		h.logger.Error("error getting segment", zap.Error(err), zap.Any("req", req))
 		c.JSON(http.StatusBadRequest, resp)
