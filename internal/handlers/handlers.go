@@ -6,6 +6,7 @@ import (
 	"github.com/supperdoggy/spotify-web-project/spotify-db/shared/structs"
 	globalStructs "github.com/supperdoggy/spotify-web-project/spotify-globalStructs"
 	"go.uber.org/zap"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -25,6 +26,8 @@ func (h *Handlers) AddSegments(c *gin.Context) {
 	var req structs.AddSegmentsReq
 	var resp structs.AddSegmentsResp
 	if err := c.Bind(&req); err != nil {
+		data, _ := ioutil.ReadAll(c.Request.Body)
+		h.logger.Error("error binding req", zap.Error(err), zap.String("data", string(data)))
 		resp.Error = "error binding req"
 		c.JSON(http.StatusBadRequest, resp)
 		return
