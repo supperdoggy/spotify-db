@@ -113,3 +113,23 @@ func (h *Handlers) GetUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
+
+func (h *Handlers) NewPlaylist(c *gin.Context) {
+	var req structs.NewPlaylistReq
+	var resp structs.NewPlaylistResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	//resp, err := h.s.NewPlaylist(req)
+	//if err != nil {
+	//	h.logger.Error("error creating new playlist", zap.Error(err), zap.Any("req", req))
+	//	c.JSON(http.StatusBadRequest, resp)
+	//	return
+	//}
+	//
+	//c.JSON(http.StatusOK, resp)
+}

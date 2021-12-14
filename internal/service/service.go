@@ -6,6 +6,7 @@ import (
 	"github.com/supperdoggy/spotify-web-project/spotify-db/shared/structs"
 	globalStructs "github.com/supperdoggy/spotify-web-project/spotify-globalStructs"
 	"go.uber.org/zap"
+	"time"
 )
 
 type IService interface {
@@ -111,3 +112,57 @@ func (s *Service) GetUser(req structs.GetUserReq) (resp structs.GetUserResp, err
 	resp.User = u
 	return resp, nil
 }
+
+func (s *Service) NewPlaylist(req structs.NewPlaylistReq) (resp structs.NewPlaylistResp, err error) {
+	if req.UserID == "" || req.PlaylistName == "" {
+		resp.Error = "you need to fill playlist name"
+		return resp, errors.New(resp.Error)
+	}
+
+	p := globalStructs.Playlist{
+		Name:        req.PlaylistName,
+		Description: req.Description,
+		OwnerID:     req.UserID,
+		Songs:       []globalStructs.Song{},
+		Created:     time.Now(),
+		Shared:      req.Shared,
+	}
+
+	err = s.d.NewPlaylist(p)
+	if err != nil {
+		s.logger.Error("error creating new playlist", zap.Error(err), zap.Any("playlist", p))
+		resp.Error = err.Error()
+		return
+	}
+
+	resp.OK = true
+	return
+}
+
+func (s *Service) DeleteUserPlaylist(req structs.DeleteUserPlaylistReq) (resp structs.DeleteUserPlaylistResp, err error) {
+	if req.PlaylistID == "" || req.UserID == "" {
+		resp.Error = "ids must not be empty"
+		return resp, errors.New(resp.Error)
+	}
+
+	err = s.d.DeleteUserPlaylist(req.PlaylistID, req.UserID)
+	if err != nil {
+		s.logger.Error("error deleting user playlist", zap.Error(err), zap.Any("req", req))
+		resp.Error = err.Error()
+		return
+	}
+
+	resp.OK = true
+	return
+}
+
+//func (s *Service) AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (resp structs.AddSongToUserPlaylistResp, err error) {
+//	if req.PlaylistID == "" || req.SongID == "" || req.UserID == "" {
+//		return
+//	}
+//
+//	s, err := s.d.GetSong
+//
+//	err = s.d.AddSongsToUserPlaylist(req.PlaylistID, req.UserID, s)
+//
+//}

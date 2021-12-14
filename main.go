@@ -11,7 +11,7 @@ import (
 func main() {
 	r := gin.Default()
 	logger, _ := zap.NewDevelopment()
-	db, err := db2.NewDB("spotify")
+	db, err := db2.NewDB("spotify", logger)
 	if err != nil {
 		logger.Fatal("error connecting to db", zap.Error(err))
 	}
@@ -25,6 +25,7 @@ func main() {
 		apiv1.POST("/getsegment", handlers.GetSegment)
 		apiv1.POST("/new_user", handlers.NewUser)
 		apiv1.POST("/get_user", handlers.GetUser)
+		apiv1.POST("/new_playlist", handlers.NewPlaylist)
 	}
 
 	if err := r.Run(":8082"); err != nil {
