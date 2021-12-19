@@ -124,12 +124,52 @@ func (h *Handlers) NewPlaylist(c *gin.Context) {
 		return
 	}
 
-	//resp, err := h.s.NewPlaylist(req)
-	//if err != nil {
-	//	h.logger.Error("error creating new playlist", zap.Error(err), zap.Any("req", req))
-	//	c.JSON(http.StatusBadRequest, resp)
-	//	return
-	//}
-	//
-	//c.JSON(http.StatusOK, resp)
+	resp, err := h.s.NewPlaylist(req)
+	if err != nil {
+		h.logger.Error("error creating new playlist", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *Handlers) AddSongToUserPlaylist(c *gin.Context) {
+	var req structs.AddSongToUserPlaylistReq
+	var resp structs.AddSongToUserPlaylistResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.AddSongToUserPlaylist(req)
+	if err != nil {
+		h.logger.Error("error adding new song to playlist", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *Handlers) RemoveSongFromUserPlaylist(c *gin.Context) {
+	var req structs.RemoveSongFromUserPlaylistReq
+	var resp structs.RemoveSongFromUserPlaylistResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.RemoveSongFromUserPlaylist(req)
+	if err != nil {
+		h.logger.Error("error removing song from user playlist", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
 }

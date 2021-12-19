@@ -15,6 +15,10 @@ type IService interface {
 	GetSegment(req structs.GetSegmentReq) (resp structs.GetSegmentResp, err error)
 	GetUser(req structs.GetUserReq) (resp structs.GetUserResp, err error)
 	NewUser(req globalStructs.User) (resp structs.NewUserResp, err error)
+	NewPlaylist(req structs.NewPlaylistReq) (resp structs.NewPlaylistResp, err error)
+	DeleteUserPlaylist(req structs.DeleteUserPlaylistReq) (resp structs.DeleteUserPlaylistResp, err error)
+	AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (resp structs.AddSongToUserPlaylistResp, err error)
+	RemoveSongFromUserPlaylist(req structs.RemoveSongFromUserPlaylistReq) (resp structs.RemoveSongFromUserPlaylistResp, err error)
 }
 
 type Service struct {
@@ -156,13 +160,42 @@ func (s *Service) DeleteUserPlaylist(req structs.DeleteUserPlaylistReq) (resp st
 	return
 }
 
-//func (s *Service) AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (resp structs.AddSongToUserPlaylistResp, err error) {
-//	if req.PlaylistID == "" || req.SongID == "" || req.UserID == "" {
-//		return
-//	}
-//
-//	s, err := s.d.GetSong
-//
-//	err = s.d.AddSongsToUserPlaylist(req.PlaylistID, req.UserID, s)
-//
-//}
+func (s *Service) AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (resp structs.AddSongToUserPlaylistResp, err error) {
+	if req.PlaylistID == "" || req.SongID == "" || req.UserID == "" {
+		return
+	}
+
+	song, err := s.d.GetSongByID(req.SongID)
+	if err != nil {
+		s.logger.Error("error getting song by id", zap.Error(err))
+		resp.Error = err.Error()
+		return resp, err
+	}
+
+	err = s.d.AddSongsToUserPlaylist(req.PlaylistID, req.UserID, song)
+	if err !=  nil {
+		s.logger.Error("error adding song to playlist", zap.Error(err))
+		resp.Error = err.Error()
+		return resp, err
+	}
+
+	resp.OK = true
+	return
+}
+
+func (s *Service) RemoveSongFromUserPlaylist(req structs.RemoveSongFromUserPlaylistReq) (resp structs.RemoveSongFromUserPlaylistResp, err error) {
+	if req.PlaylistID == "" || req.SongID == "" || req.UserID == ""{
+		resp.Error = "ids must not be empty"
+		return
+	}
+
+	err = s.d.RemoveSongFromUserPlaylist(req.PlaylistID, req.UserID, req.SongID)
+	if err != nil {
+		s.logger.Error("error removing song from playlist", zap.Error(err))
+		resp.Error = err.Error()
+		return
+	}
+
+	resp.OK = true
+	return
+}

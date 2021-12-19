@@ -93,3 +93,15 @@ type AddSongToUserPlaylistResp struct {
 	Error string `json:"error"`
 	OK bool `json:"ok"`
 }
+
+type RemoveSongFromUserPlaylistReq struct {
+	UserID string `json:"user_id"`
+	SongID string `json:"song_id"`
+	PlaylistID string `json:"playlist_id"`
+}
+
+type RemoveSongFromUserPlaylistResp struct {
+	Error string `json:"error"`
+	OK bool `json:"ok"`
+}
+

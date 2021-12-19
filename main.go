@@ -26,6 +26,8 @@ func main() {
 		apiv1.POST("/new_user", handlers.NewUser)
 		apiv1.POST("/get_user", handlers.GetUser)
 		apiv1.POST("/new_playlist", handlers.NewPlaylist)
+		apiv1.POST("/add_song_playlist", handlers.AddSongToUserPlaylist)
+		apiv1.POST("/remove_song_playlist", handlers.RemoveSongFromUserPlaylist)
 	}
 
 	if err := r.Run(":8082"); err != nil {

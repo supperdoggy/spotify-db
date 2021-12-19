@@ -149,7 +149,6 @@ func (d *DB) AddSongsToUserPlaylist(id, owner string, song globalStructs.Song) e
 	err := d.PlaylistCollection.Update(obj{
 		"_id": id,
 		"owner_id": owner,
-		"songs._id": obj{"$ne": song.ID},
 	}, obj{
 		"$push": obj{"songs": song},
 	})
@@ -165,7 +164,6 @@ func (d *DB) AddSongsToPlaylist(id string, song globalStructs.Song) error {
 
 	err := d.PlaylistCollection.Update(obj{
 		"_id": id,
-		"songs._id": obj{"$ne": song.ID},
 	}, obj{
 		"$push": obj{"songs": song},
 	})
