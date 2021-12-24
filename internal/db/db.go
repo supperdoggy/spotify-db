@@ -21,12 +21,12 @@ type IDB interface {
 	NewPlaylist(p globalStructs.Playlist) error
 	DeleteUserPlaylist(id, owner string) error
 	DeletePlaylistByID(id string) error
-	GetUserPlaylistByID(id, owner string) (p *globalStructs.Playlist, err error)
-	GetPlaylistByID(id string) (p *globalStructs.Playlist, err error)
+	GetPlaylistByID(id string) (p globalStructs.Playlist, err error)
 	AddSongsToUserPlaylist(id, owner string, song globalStructs.Song) error
 	AddSongsToPlaylist(id string, song globalStructs.Song) error
 	RemoveSongFromUserPlaylist(id, owner, songID string) error
 	RemoveSongFromPlaylist(id, songID string) error
+	GetAllUserPlaylists(owner string) (p []globalStructs.ShortPlaylist, err error)
 }
 
 type DB struct {
@@ -124,17 +124,14 @@ func (d *DB) DeletePlaylistByID(id string) error {
 	return err
 }
 
-func (d *DB) GetUserPlaylistByID(id, owner string) (p *globalStructs.Playlist, err error) {
-	if id == "" || owner == "" {
-		return nil, errors.New("id and owner must not be empty")
-	}
-	err = d.PlaylistCollection.Find(obj{"_id":id, "owner_id": owner}).One(&p)
+func (d *DB) GetAllUserPlaylists(owner string) (p []globalStructs.ShortPlaylist, err error) {
+	err = d.PlaylistCollection.Find(obj{"owner_id": owner}).All(&p)
 	return
 }
 
-func (d *DB) GetPlaylistByID(id string) (p *globalStructs.Playlist, err error) {
+func (d *DB) GetPlaylistByID(id string) (p globalStructs.Playlist, err error) {
 	if id == "" {
-		return nil, errors.New("id must not be empty")
+		return p, errors.New("id must not be empty")
 	}
 	err = d.PlaylistCollection.Find(obj{"_id": id}).One(&p)
 	return

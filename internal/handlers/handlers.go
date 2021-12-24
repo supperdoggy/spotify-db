@@ -134,6 +134,46 @@ func (h *Handlers) NewPlaylist(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+func (h *Handlers) GetUserPlaylists(c *gin.Context) {
+	var req structs.GetUserAllPlaylistsReq
+	var resp structs.GetUserAllPlaylistsResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.GetUserPlaylists(req)
+	if err != nil {
+		h.logger.Error("error getting user laylists", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *Handlers) GetUserPlaylist(c *gin.Context) {
+	var req structs.GetPlaylistReq
+	var resp structs.GetPlaylistResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.GetUserPlaylist(req)
+	if err != nil {
+		h.logger.Error("error getting user playlist playlist", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
 func (h *Handlers) AddSongToUserPlaylist(c *gin.Context) {
 	var req structs.AddSongToUserPlaylistReq
 	var resp structs.AddSongToUserPlaylistResp

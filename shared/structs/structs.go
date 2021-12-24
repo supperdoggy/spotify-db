@@ -74,7 +74,6 @@ type GetUserAllPlaylistsResp struct {
 }
 
 type GetPlaylistReq struct {
-	UserID string `json:"user_id"`
 	PlaylistID string `json:"playlist_id"`
 }
 

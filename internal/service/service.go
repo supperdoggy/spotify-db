@@ -19,6 +19,8 @@ type IService interface {
 	DeleteUserPlaylist(req structs.DeleteUserPlaylistReq) (resp structs.DeleteUserPlaylistResp, err error)
 	AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (resp structs.AddSongToUserPlaylistResp, err error)
 	RemoveSongFromUserPlaylist(req structs.RemoveSongFromUserPlaylistReq) (resp structs.RemoveSongFromUserPlaylistResp, err error)
+	GetUserPlaylists(req structs.GetUserAllPlaylistsReq) (resp structs.GetUserAllPlaylistsResp, err error)
+	GetUserPlaylist(req structs.GetPlaylistReq) (resp structs.GetPlaylistResp, err error)
 }
 
 type Service struct {
@@ -140,6 +142,37 @@ func (s *Service) NewPlaylist(req structs.NewPlaylistReq) (resp structs.NewPlayl
 	}
 
 	resp.OK = true
+	return
+}
+
+func (s *Service) GetUserPlaylist(req structs.GetPlaylistReq) (resp structs.GetPlaylistResp, err error) {
+	if req.PlaylistID == "" {
+		resp.Error = "ids must not be empty"
+		return resp, errors.New(resp.Error)
+	}
+
+	resp.Playlist, err = s.d.GetPlaylistByID(req.PlaylistID)
+	if err != nil {
+		s.logger.Error("error getting user playlist by id", zap.Error(err), zap.Any("req", req))
+		resp.Error = err.Error()
+	}
+
+	return
+}
+
+func (s *Service) GetUserPlaylists(req structs.GetUserAllPlaylistsReq) (resp structs.GetUserAllPlaylistsResp, err error) {
+	if req.UserID == "" {
+		resp.Error = "ids must not be empty"
+		return resp, errors.New(resp.Error)
+	}
+
+	resp.Playlists, err = s.d.GetAllUserPlaylists(req.UserID)
+	if err != nil {
+		s.logger.Error("error getting all user playlists")
+		resp.Error = err.Error()
+		return resp, err
+	}
+
 	return
 }
 
