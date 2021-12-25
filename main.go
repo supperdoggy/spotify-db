@@ -25,7 +25,10 @@ func main() {
 		apiv1.POST("/getsegment", handlers.GetSegment)
 		apiv1.POST("/new_user", handlers.NewUser)
 		apiv1.POST("/get_user", handlers.GetUser)
+
+		// playlists
 		apiv1.POST("/new_playlist", handlers.NewPlaylist)
+		apiv1.POST("/delete_playlist", handlers.DeletePlaylist)
 		apiv1.POST("/user_playlists", handlers.GetUserPlaylists)
 		apiv1.POST("/get_playlist", handlers.GetUserPlaylist)
 		apiv1.POST("/add_song_playlist", handlers.AddSongToUserPlaylist)

@@ -134,6 +134,26 @@ func (h *Handlers) NewPlaylist(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+func (h *Handlers) DeletePlaylist(c *gin.Context) {
+	var req structs.DeleteUserPlaylistReq
+	var resp structs.DeleteUserPlaylistResp
+	if err := c.Bind(&req); err != nil {
+		h.logger.Error("error binding req", zap.Error(err))
+		resp.Error = err.Error()
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	resp, err := h.s.DeleteUserPlaylist(req)
+	if err != nil {
+		h.logger.Error("error creating new playlist", zap.Error(err), zap.Any("req", req))
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
 func (h *Handlers) GetUserPlaylists(c *gin.Context) {
 	var req structs.GetUserAllPlaylistsReq
 	var resp structs.GetUserAllPlaylistsResp

@@ -16,6 +16,7 @@ type IService interface {
 	GetUser(req structs.GetUserReq) (resp structs.GetUserResp, err error)
 	NewUser(req globalStructs.User) (resp structs.NewUserResp, err error)
 	NewPlaylist(req structs.NewPlaylistReq) (resp structs.NewPlaylistResp, err error)
+	DeletePlaylist(req structs.DeleteUserPlaylistReq) (resp structs.DeleteUserPlaylistResp, err error)
 	DeleteUserPlaylist(req structs.DeleteUserPlaylistReq) (resp structs.DeleteUserPlaylistResp, err error)
 	AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (resp structs.AddSongToUserPlaylistResp, err error)
 	RemoveSongFromUserPlaylist(req structs.RemoveSongFromUserPlaylistReq) (resp structs.RemoveSongFromUserPlaylistResp, err error)
@@ -121,7 +122,7 @@ func (s *Service) GetUser(req structs.GetUserReq) (resp structs.GetUserResp, err
 
 func (s *Service) NewPlaylist(req structs.NewPlaylistReq) (resp structs.NewPlaylistResp, err error) {
 	if req.UserID == "" || req.PlaylistName == "" {
-		resp.Error = "you need to fill playlist name"
+		resp.Error = "you need to fill playlist name and user_id"
 		return resp, errors.New(resp.Error)
 	}
 
@@ -143,6 +144,24 @@ func (s *Service) NewPlaylist(req structs.NewPlaylistReq) (resp structs.NewPlayl
 
 	resp.OK = true
 	return
+}
+
+func (s *Service) DeletePlaylist(req structs.DeleteUserPlaylistReq) (resp structs.DeleteUserPlaylistResp, err error) {
+	if req.PlaylistID == "" || req.UserID == "" {
+		resp.Error = "you need to fill ids"
+		return resp, errors.New(resp.Error)
+	}
+
+	err = s.d.DeleteUserPlaylist(req.PlaylistID, req.UserID)
+	if err != nil {
+		s.logger.Error("error deleting user playlist", zap.Error(err), zap.Any("req", req))
+		resp.Error = err.Error()
+		return
+	}
+
+	resp.OK = true
+	return
+
 }
 
 func (s *Service) GetUserPlaylist(req structs.GetPlaylistReq) (resp structs.GetPlaylistResp, err error) {
@@ -206,7 +225,7 @@ func (s *Service) AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (r
 	}
 
 	err = s.d.AddSongsToUserPlaylist(req.PlaylistID, req.UserID, song)
-	if err !=  nil {
+	if err != nil {
 		s.logger.Error("error adding song to playlist", zap.Error(err))
 		resp.Error = err.Error()
 		return resp, err
@@ -217,7 +236,7 @@ func (s *Service) AddSongToUserPlaylist(req structs.AddSongToUserPlaylistReq) (r
 }
 
 func (s *Service) RemoveSongFromUserPlaylist(req structs.RemoveSongFromUserPlaylistReq) (resp structs.RemoveSongFromUserPlaylistResp, err error) {
-	if req.PlaylistID == "" || req.SongID == "" || req.UserID == ""{
+	if req.PlaylistID == "" || req.SongID == "" || req.UserID == "" {
 		resp.Error = "ids must not be empty"
 		return
 	}

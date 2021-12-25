@@ -30,7 +30,7 @@ type IDB interface {
 }
 
 type DB struct {
-	Logger *zap.Logger
+	Logger  *zap.Logger
 	Session *mgo.Session
 
 	SegmentsCollection *mgo.Collection
@@ -47,7 +47,7 @@ func NewDB(dbname string, logger *zap.Logger) (IDB, error) {
 		return nil, err
 	}
 	return &DB{
-		Logger: logger,
+		Logger:             logger,
 		Session:            session,
 		SegmentsCollection: session.DB(dbname).C("segments"),
 		SongsCollection:    session.DB(dbname).C("songs"),
@@ -144,7 +144,7 @@ func (d *DB) AddSongsToUserPlaylist(id, owner string, song globalStructs.Song) e
 	}
 
 	err := d.PlaylistCollection.Update(obj{
-		"_id": id,
+		"_id":      id,
 		"owner_id": owner,
 	}, obj{
 		"$push": obj{"songs": song},
@@ -175,7 +175,7 @@ func (d *DB) RemoveSongFromUserPlaylist(id, owner, songID string) error {
 	}
 
 	return d.PlaylistCollection.Update(obj{
-		"_id": id,
+		"_id":      id,
 		"owner_id": owner,
 		"songs": obj{
 			"_id": songID,

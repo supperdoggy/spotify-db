@@ -3,7 +3,7 @@ package structs
 import globalStructs "github.com/supperdoggy/spotify-web-project/spotify-globalStructs"
 
 type AddSegmentsReq struct {
-	UserID string `json:"user_id"`
+	UserID   string                   `json:"user_id"`
 	Ts       []globalStructs.SongData `json:"ts"`
 	M3H8     globalStructs.SongData   `json:"m3h8"`
 	SongData globalStructs.Song       `json:"song_data"`
@@ -29,7 +29,7 @@ type GetSegmentResp struct {
 }
 
 type NewUserResp struct {
-	OK bool `json:"ok"`
+	OK    bool   `json:"ok"`
 	Error string `json:"error"`
 }
 
@@ -38,30 +38,30 @@ type GetUserReq struct {
 }
 
 type GetUserResp struct {
-	User globalStructs.User `json:"user"`
-	Error string `json:"error"`
+	User  globalStructs.User `json:"user"`
+	Error string             `json:"error"`
 }
 
 type NewPlaylistReq struct {
-	UserID string `json:"user_id"`
+	UserID       string `json:"user_id"`
 	PlaylistName string `json:"playlist_name"`
-	Description string `json:"description"`
-	Shared bool `json:"shared"`
+	Description  string `json:"description"`
+	Shared       bool   `json:"shared"`
 }
 
 type NewPlaylistResp struct {
 	Error string `json:"error"`
-	OK bool `json:"ok"`
+	OK    bool   `json:"ok"`
 }
 
 type DeleteUserPlaylistReq struct {
-	UserID string `json:"user_id"`
+	UserID     string `json:"user_id"`
 	PlaylistID string `json:"playlist_id"`
 }
 
 type DeleteUserPlaylistResp struct {
 	Error string `json:"error"`
-	OK bool `json:"ok"`
+	OK    bool   `json:"ok"`
 }
 
 type GetUserAllPlaylistsReq struct {
@@ -69,7 +69,7 @@ type GetUserAllPlaylistsReq struct {
 }
 
 type GetUserAllPlaylistsResp struct {
-	Error string `json:"error"`
+	Error     string                        `json:"error"`
 	Playlists []globalStructs.ShortPlaylist `json:"playlists"`
 }
 
@@ -78,29 +78,28 @@ type GetPlaylistReq struct {
 }
 
 type GetPlaylistResp struct {
-	Error string `json:"error"`
+	Error    string                 `json:"error"`
 	Playlist globalStructs.Playlist `json:"playlist"`
 }
 
 type AddSongToUserPlaylistReq struct {
-	UserID string `json:"user_id"`
+	UserID     string `json:"user_id"`
 	PlaylistID string `json:"playlist_id"`
-	SongID string `json:"song_id"`
+	SongID     string `json:"song_id"`
 }
 
 type AddSongToUserPlaylistResp struct {
 	Error string `json:"error"`
-	OK bool `json:"ok"`
+	OK    bool   `json:"ok"`
 }
 
 type RemoveSongFromUserPlaylistReq struct {
-	UserID string `json:"user_id"`
-	SongID string `json:"song_id"`
+	UserID     string `json:"user_id"`
+	SongID     string `json:"song_id"`
 	PlaylistID string `json:"playlist_id"`
 }
 
 type RemoveSongFromUserPlaylistResp struct {
 	Error string `json:"error"`
-	OK bool `json:"ok"`
+	OK    bool   `json:"ok"`
 }
-
